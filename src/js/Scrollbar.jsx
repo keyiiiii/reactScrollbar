@@ -1,6 +1,8 @@
 import React from 'react';
 import {Motion, spring} from 'react-motion';
 import {modifyObjValues} from './utils';
+import _ from "lodash";
+const THROTTLE_TIME = 100;
 
 class ScrollBar extends React.Component {
     constructor(props){
@@ -11,14 +13,16 @@ class ScrollBar extends React.Component {
             scrollSize: newState.scrollSize,
             isDragging: false,
             lastClientPosition: 0
-        }
+        };
 
-        if(props.type === 'vertical'){
-            this.bindedHandleMouseMove = this.handleMouseMoveForVertical.bind(this);
+    }
+
+    componentWillMount() {
+        if(this.props.type === 'vertical'){
+            this.bindedHandleMouseMove = _.throttle(this.handleMouseMoveForVertical.bind(this), THROTTLE_TIME);
         } else {
-            this.bindedHandleMouseMove = this.handleMouseMoveForHorizontal.bind(this);
+            this.bindedHandleMouseMove = _.throttle(this.handleMouseMoveForHorizontal.bind(this), THROTTLE_TIME);
         }
-
         this.bindedHandleMouseUp = this.handleMouseUp.bind(this);
     }
 
